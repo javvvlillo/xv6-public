@@ -4,7 +4,7 @@
 #include "fcntl.h"
 
 int
-int main(int argc, char const *argv[])
+main(int argc, char const *argv[])
 {
     getprocs();
     exit();
