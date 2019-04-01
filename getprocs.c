@@ -1,0 +1,11 @@
+#include "types.h"
+#include "stat.h"
+#include "user.h"
+#include "fcntl.h"
+
+int
+int main(int argc, char const *argv[])
+{
+    getprocs();
+    exit();
+}
