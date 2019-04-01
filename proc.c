@@ -538,7 +538,6 @@ getprocs()
 {
   int count=0;
   struct  proc *p;
-  sti();
   acquire(&ptable.lock);
   for (p = ptable.proc; p < &ptable.proc[NPROC];p++)
   {
