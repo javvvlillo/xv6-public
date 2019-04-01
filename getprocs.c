@@ -6,6 +6,6 @@
 int
 main(int argc, char const *argv[])
 {
-    getprocs();
+    printf(1,"los procesos en ejecucion son %d\n ",getprocs());
     exit();
 }

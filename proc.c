@@ -547,7 +547,6 @@ getprocs()
        count ++;
     }
   }
-  printf(1,"La cantidad de procesos corriendo en el sistema es de: %d",count);
+  return count;
   release(&ptable.lock);
-  return 22; 
 }
