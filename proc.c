@@ -542,7 +542,7 @@ getprocs()
   acquire(&ptable.lock);
   for (p = ptable.proc; p < &ptable.proc[NPROC];p++)
   {
-    if( p-> state != UNUSED || p-> state != ZOMBIE )
+    if( p-> state != UNUSED && p-> state != ZOMBIE )
     {
        count ++;
     }
