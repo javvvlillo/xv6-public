@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "rand.h"
 
 struct {
   struct spinlock lock;
@@ -88,6 +89,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->tickets = 100;
 
   release(&ptable.lock);
 
@@ -113,6 +115,23 @@ found:
   p->context->eip = (uint)forkret;
 
   return p;
+}
+
+int
+getprocs()
+{
+  int count=0;
+  struct  proc *p;
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC];p++)
+  {
+    if( p-> state != UNUSED && p-> state != ZOMBIE )
+    {
+       count ++;
+    }
+  }
+  release(&ptable.lock);
+  return count;
 }
 
 //PAGEBREAK: 32
@@ -319,19 +338,32 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+
+int Count_tickets(void)
+{
+  return getprocs()*100;
+}
+
 void
 scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
+  int TTickets;
+  int winner;
   
   for(;;){
     // Enable interrupts on this processor.
     sti();
+    int TicketP=0;
+    TTickets=Count_tickets();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    
+    winner =rand()/TTickets;
+
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
@@ -339,6 +371,11 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      TicketP+= p->tickets;
+      if(TicketP<winner)
+      {
+        continue;
+      }
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
