@@ -532,3 +532,19 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int
+getdir(void)
+{
+  struct proc *p;
+  acquire(&ptable.lock);
+  or(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state != UNUSED && p->state != ZOMBIE){
+      pde_t dir = V2P(p->pgdir);
+      cprintf("Adress of process %s: %p \n", p->name, dir);
+    }
+  }
+  release(&ptable.lock);
+  return 0;
+
+}

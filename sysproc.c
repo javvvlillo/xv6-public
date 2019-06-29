@@ -89,3 +89,9 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int
+sys_getdir(void)
+{
+  return getdir();
+}
